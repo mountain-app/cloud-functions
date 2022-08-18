@@ -33,7 +33,7 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
 
     return data;
   } catch (err: any) {
-    functions.logger.error(err.response.data);
+    // functions.logger.error(err.response.data);
 
     throw new functions.https.HttpsError(
       statusToErrorCodeMapper[err.response.data.status],
