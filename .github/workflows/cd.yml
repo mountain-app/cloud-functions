@@ -1,0 +1,38 @@
+name: "CD"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    name: "Deploy Cloud Functions to GCP"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Use cached node_modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install dependencies
+        working-directory: functions
+        run: npm ci
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only functions
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      # - name: Deploy
+      #   working-directory: functions
+      #   run: npm run deploy --token ${{ secrets.FIREBASE_TOKEN }}
+      # env:
+      #   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

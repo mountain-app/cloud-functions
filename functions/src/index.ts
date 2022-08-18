@@ -7,7 +7,7 @@ admin.initializeApp();
 const API_URL = "https://mountain-app-server-test.herokuapp.com/api";
 
 export const createUser = functions.auth.user().onCreate(async (user) => {
-  functions.logger.info("Creating user with id:", user.uid);
+  functions.logger.info("Creating user with id: ", user.uid);
 
   const token = await admin.credential.applicationDefault().getAccessToken();
 
