@@ -30,9 +30,3 @@ jobs:
           args: deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-
-      # - name: Deploy
-      #   working-directory: functions
-      #   run: npm run deploy --token ${{ secrets.FIREBASE_TOKEN }}
-      # env:
-      #   FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}

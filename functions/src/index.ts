@@ -1,6 +1,8 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import axios from "axios";
+import { User } from "./dtos";
+import statusToErrorCodeMapper from "./utils/statusToErrorCodeMapper";
 
 admin.initializeApp();
 
@@ -12,7 +14,7 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
   const token = await admin.credential.applicationDefault().getAccessToken();
 
   try {
-    const response = await axios.post(
+    const { data } = await axios.post<User>(
       `${API_URL}/restricted/users`,
       {
         id: user.uid,
@@ -27,10 +29,15 @@ export const createUser = functions.auth.user().onCreate(async (user) => {
       }
     );
 
-    functions.logger.info("User successfully created: ", response.data);
+    functions.logger.info("User successfully created: ", data);
 
-    return response.data;
-  } catch (err) {
-    functions.logger.error(err);
+    return data;
+  } catch (err: any) {
+    functions.logger.error(err.response.data);
+
+    throw new functions.https.HttpsError(
+      statusToErrorCodeMapper[err.response.data.status],
+      err.response.data.message
+    );
   }
 });
