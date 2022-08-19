@@ -8,6 +8,7 @@ admin.initializeApp(); // forse non serve
 
 // o usiamo il context per accedere ai dati dello user
 // oppure lo passiamo noi come primo argomento
+// @todo specificare la regione
 export const createUser = functions.https.onCall(async (_, { auth }) => {
   if (!auth) {
     throw new functions.https.HttpsError(
