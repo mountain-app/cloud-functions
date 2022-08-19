@@ -15,7 +15,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "axios": "0.27.2",
+    "@mountain-app/orm": "^1.0.15",
     "firebase-admin": "^10.0.2",
     "firebase-functions": "^3.18.0"
   },
