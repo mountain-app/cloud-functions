@@ -26,6 +26,11 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Test
+        working-directory: functions
+        run: |
+          sed -i.bak "s/\${NPM_TOKEN}/${NPM_TOKEN}/g" .npmrc
+
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
         with:
