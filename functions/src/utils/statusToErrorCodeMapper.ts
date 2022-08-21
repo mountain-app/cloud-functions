@@ -5,6 +5,7 @@ const statusToErrorCodeMapper: {
 } = {
   500: "internal",
   409: "already-exists",
+  404: "not-found",
 };
 
 export default statusToErrorCodeMapper;
