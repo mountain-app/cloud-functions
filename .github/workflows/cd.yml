@@ -20,12 +20,6 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install dependencies
-        working-directory: functions
-        run: npm ci
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Inject NPM token into .npmrc
         working-directory: functions
         run: |
@@ -33,9 +27,20 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+      - name: Install dependencies
+        working-directory: functions
+        run: npm ci
+
+      # - name: Deploy to Firebase
+      #   uses: w9jds/firebase-action@master
+      #   with:
+      #     args: deploy --only functions
+      #   env:
+      #     FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+      #     DATABASE_URL: ${{ secrets.DATABASE_URL }}
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
-        with:
-          args: deploy --only functions
+        working-directory: functions
+        run: npx firebase deploy --only functions
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }} # serve???

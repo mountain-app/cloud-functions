@@ -1,7 +1,7 @@
 import { User, Prisma } from "@mountain-app/orm";
 import * as functions from "firebase-functions";
 import { UserDTO } from "../dtos";
-import statusToErrorCodeMapper from "../utils/statusToErrorCodeMapper";
+// import statusToErrorCodeMapper from "../utils/statusToErrorCodeMapper";
 
 export const createUser = functions
   .region("europe-west2")
@@ -11,6 +11,16 @@ export const createUser = functions
         "unauthenticated",
         "User is not authenticated"
       );
+    }
+
+    const existingUser = await Prisma.getInstance().user.findFirst({
+      where: {
+        OR: [{ email: auth.token.email }, { id: auth.uid }],
+      },
+    });
+
+    if (existingUser) {
+      return existingUser;
     }
 
     functions.logger.info("Creating user with id: ", auth.uid);
@@ -33,6 +43,7 @@ export const createUser = functions
 
       return user;
     } catch (err: any) {
+      functions.logger.error(err);
       //   throw new functions.https.HttpsError(
       //     statusToErrorCodeMapper[err.response.data.status],
       //     err.response.data.message,
@@ -40,6 +51,7 @@ export const createUser = functions
       //       status: err.response.data.status,
       //     }
       //   );
+      // @FIX
       throw new functions.https.HttpsError("unknown", JSON.stringify(err));
     }
   });
