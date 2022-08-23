@@ -33,12 +33,13 @@ export const createUser = functions
 
       return user;
     } catch (err: any) {
-      throw new functions.https.HttpsError(
-        statusToErrorCodeMapper[err.response.data.status],
-        err.response.data.message,
-        {
-          status: err.response.data.status,
-        }
-      );
+      //   throw new functions.https.HttpsError(
+      //     statusToErrorCodeMapper[err.response.data.status],
+      //     err.response.data.message,
+      //     {
+      //       status: err.response.data.status,
+      //     }
+      //   );
+      throw new functions.https.HttpsError("unknown", JSON.stringify(err));
     }
   });
