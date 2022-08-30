@@ -1,7 +1,7 @@
-export interface User {
+export interface UserDTO {
   id: string;
   email: string;
-  name: string | null;
+  name?: string;
   createdAt: Date;
   updatedAt: Date;
 }
