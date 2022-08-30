@@ -1,10 +1,13 @@
 import * as functions from "firebase-functions";
-import { User } from "../db/entities";
 import pool from "../db/pool";
 import {
   CREATE_USER_QUERY,
   FIND_USER_BY_ID_OR_EMAIL_QUERY,
 } from "../db/queries";
+
+/**
+ * @TODO Fix Timestamps, add mapping from user table to User entity
+ */
 
 export const createUser = functions
   .region("europe-west2")
@@ -17,7 +20,7 @@ export const createUser = functions
     }
 
     try {
-      const findUserByIdOrEmailResult = await pool.query<User>(
+      const findUserByIdOrEmailResult = await pool.query(
         FIND_USER_BY_ID_OR_EMAIL_QUERY,
         [auth.uid, auth.token.email]
       );
@@ -25,12 +28,15 @@ export const createUser = functions
       const existingUser = findUserByIdOrEmailResult.rows[0];
 
       if (existingUser) {
+        // use a mapper to map from user table to User entity and to do this
+        existingUser.created_at = existingUser.created_at.toISOString();
+        existingUser.updated_at = existingUser.updated_at.toISOString();
         return existingUser;
       }
 
-      functions.logger.error("Creating user with id: ", auth.uid);
+      functions.logger.info("Creating user with id: ", auth.uid);
 
-      const createUserResult = await pool.query<User>(CREATE_USER_QUERY, [
+      const createUserResult = await pool.query(CREATE_USER_QUERY, [
         auth.uid,
         auth.token.email,
         auth.token.name,
@@ -38,7 +44,11 @@ export const createUser = functions
 
       const createdUser = createUserResult.rows[0];
 
-      functions.logger.error("User successfully created: ", createdUser);
+      functions.logger.info("User successfully created", createdUser);
+
+      // use a mapper to map from user table to User entity and to do this
+      createdUser.created_at = createdUser.created_at.toISOString();
+      createdUser.updated_at = createdUser.updated_at.toISOString();
 
       return createdUser;
     } catch (err: any) {
