@@ -1,7 +1,10 @@
-import { User, Prisma } from "@mountain-app/orm";
 import * as functions from "firebase-functions";
-import { UserDTO } from "../dtos";
-// import statusToErrorCodeMapper from "../utils/statusToErrorCodeMapper";
+import { User } from "../db/entities";
+import pool from "../db/pool";
+import {
+  CREATE_USER_QUERY,
+  FIND_USER_BY_ID_OR_EMAIL_QUERY,
+} from "../db/queries";
 
 export const createUser = functions
   .region("europe-west2")
@@ -13,35 +16,31 @@ export const createUser = functions
       );
     }
 
-    const existingUser = await Prisma.getInstance().user.findFirst({
-      where: {
-        OR: [{ email: auth.token.email }, { id: auth.uid }],
-      },
-    });
-
-    if (existingUser) {
-      return existingUser;
-    }
-
-    functions.logger.info("Creating user with id: ", auth.uid);
-
-    const userToCreate: UserDTO = {
-      id: auth.uid,
-      email: auth.token.email || "", // c'è sempre o no la mail?
-      name: auth.token.name,
-    };
-
     try {
-      const user: User = await Prisma.getInstance().user.create({
-        data: userToCreate,
-      });
-
-      functions.logger.info(
-        `User with id: ${user.id} successfully created: `,
-        user
+      const findUserByIdOrEmailResult = await pool.query<User>(
+        FIND_USER_BY_ID_OR_EMAIL_QUERY,
+        [auth.uid, auth.token.email]
       );
 
-      return user;
+      const existingUser = findUserByIdOrEmailResult.rows[0];
+
+      if (existingUser) {
+        return existingUser;
+      }
+
+      functions.logger.error("Creating user with id: ", auth.uid);
+
+      const createUserResult = await pool.query<User>(CREATE_USER_QUERY, [
+        auth.uid,
+        auth.token.email,
+        auth.token.name,
+      ]);
+
+      const createdUser = createUserResult.rows[0];
+
+      functions.logger.error("User successfully created: ", createdUser);
+
+      return createdUser;
     } catch (err: any) {
       functions.logger.error(err);
       //   throw new functions.https.HttpsError(
@@ -52,6 +51,6 @@ export const createUser = functions
       //     }
       //   );
       // @FIX
-      throw new functions.https.HttpsError("unknown", JSON.stringify(err));
+      throw new functions.https.HttpsError("unknown", err);
     }
   });
