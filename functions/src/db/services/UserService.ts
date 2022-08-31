@@ -1,6 +1,6 @@
 /* eslint-disable require-jsdoc */
 import { Pool, QueryResult } from "pg";
-import { UserDTO } from "../dtos/UserDTO";
+import { UserDTO } from "../../dtos/UserDTO";
 
 export class UserService {
   pool: Pool;
@@ -21,14 +21,14 @@ export class UserService {
     return UserService.mapUserResult(queryResult)[0];
   }
 
-  async createUser(id: string, email: string, name: string): Promise<UserDTO> {
+  async createUser(user: UserDTO): Promise<UserDTO> {
     const queryResult = await this.pool.query(
       `
         INSERT INTO "User" (id, email, name, updated_at)
         VALUES ($1, $2, $3, NOW())
         RETURNING *
       `,
-      [id, email, name]
+      [...Object.values(user)]
     );
 
     return UserService.mapUserResult(queryResult)[0];

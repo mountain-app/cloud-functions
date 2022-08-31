@@ -2,6 +2,6 @@ export interface UserDTO {
   id: string;
   email: string;
   name?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  readonly createdAt?: Date;
+  readonly updatedAt?: Date;
 }
