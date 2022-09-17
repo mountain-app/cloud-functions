@@ -1,3 +1,1 @@
-import { createUser } from "./services";
-
-export { createUser };
+export { persistPostgresUser } from "./functions/persistPostgresUser";

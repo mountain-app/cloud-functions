@@ -1,10 +1,10 @@
 import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/auth";
-import { userService } from "../db";
+import { userService } from "../services/UserService";
 import { UserInfo } from "../types";
 import { genderize } from "../utils/genderize";
 
-export const createUser = functions
+export const persistPostgresUser = functions
   .region("europe-west2")
   .https.onCall(async (userInfo: UserInfo, { auth }) => {
     if (!auth) {

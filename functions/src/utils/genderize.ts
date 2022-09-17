@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Gender } from "../db/entities/User";
+import { Gender } from "../entities/User";
 
 interface GenderizeResponse {
   name: string;

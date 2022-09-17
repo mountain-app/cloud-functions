@@ -1,9 +1,10 @@
 /* eslint-disable require-jsdoc */
 import { Pool, QueryResult } from "pg";
-import { UserDTO } from "../../dtos/UserDTO";
+import { pool } from "../clients/postgres";
+import { UserDTO } from "../dtos/UserDTO";
 import { User } from "../entities/User";
 
-export class UserService {
+class UserService {
   constructor(private readonly pool: Pool) {}
 
   async getUserByIdOrEmail(id: string, email: string): Promise<UserDTO> {
@@ -63,3 +64,5 @@ export class UserService {
       .filter((user) => user.id !== undefined);
   }
 }
+
+export const userService = new UserService(pool);
