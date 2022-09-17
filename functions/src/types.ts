@@ -1,6 +1,3 @@
 import { UserDTO } from "./dtos/UserDTO";
 
-export type UserInfo = Omit<
-  UserDTO,
-  "id" | "email" | "createdAt" | "updatedAt"
->;
+export type UserInfo = Pick<UserDTO, "firstName" | "lastName" | "birthday">;
