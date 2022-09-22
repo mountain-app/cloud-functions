@@ -1,20 +1,17 @@
-import { Client, ClientConfig, QueryResultRow } from "pg";
+import { Pool, QueryResultRow } from "pg";
 
 export class Repository {
-  private readonly pgClient: Client;
-  constructor(pgClientConfig: ClientConfig) {
-    this.pgClient = new Client(pgClientConfig);
-  }
+  constructor(private readonly pool: Pool) {}
 
   public async connectQueryAndDisconnect<T extends QueryResultRow>(
     query: string,
     values: any[]
   ): Promise<T[]> {
-    await this.pgClient.connect();
+    const client = await this.pool.connect();
 
-    const queryResult = await this.pgClient.query<T>(query, values);
+    const queryResult = await client.query<T>(query, values);
 
-    await this.pgClient.end();
+    client.release();
 
     return queryResult.rows;
   }

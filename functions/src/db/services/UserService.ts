@@ -1,4 +1,4 @@
-import { pgClientConfig } from "../../clients/postgres";
+import pool from "../../clients/postgres";
 import { UserDTO } from "../../dtos/UserDTO";
 import { User } from "../entities/User";
 import { UserRepository } from "../repositories/UserRepository";
@@ -12,7 +12,7 @@ export class UserService {
   private readonly userRepository: UserRepository;
 
   constructor() {
-    this.userRepository = new UserRepository(pgClientConfig);
+    this.userRepository = new UserRepository(pool);
   }
 
   async getUserByIdOrEmail(id: string, email: string): Promise<UserDTO | null> {
