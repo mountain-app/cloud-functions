@@ -1,12 +1,14 @@
 import * as functions from "firebase-functions";
 import { HttpsError } from "firebase-functions/v1/auth";
-import { userService } from "../services/UserService";
+import { UserService } from "../db/services/UserService";
 import { UserInfo } from "../types";
 import { genderize } from "../utils/genderize";
 
 export const persistPostgresUser = functions
   .region("europe-west2")
   .https.onCall(async (userInfo: UserInfo, { auth }) => {
+    const userService = new UserService();
+
     if (!auth) {
       throw new functions.https.HttpsError(
         "unauthenticated",

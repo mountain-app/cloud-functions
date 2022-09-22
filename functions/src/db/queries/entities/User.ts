@@ -1,12 +1,13 @@
-import { User } from "../db/queries/entities/User";
-import { Gender } from "../types";
+import { QueryResultRow } from "pg";
+import { Gender } from "../../../types";
 
-export class UserDTO {
+export class User {
   public id: string;
   public email: string;
   public firstName: string;
   public lastName: string;
   public birthday: Date;
+  public gender: Gender;
   public createdAt?: Date;
   public updatedAt?: Date;
 
@@ -16,6 +17,7 @@ export class UserDTO {
     firstName: string,
     lastName: string,
     birthday: Date,
+    gender: Gender,
     createdAt?: Date,
     updatedAt?: Date
   ) {
@@ -24,32 +26,21 @@ export class UserDTO {
     this.firstName = firstName;
     this.lastName = lastName;
     this.birthday = birthday;
+    this.gender = gender;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
 
-  public static fromEntity(user: User): UserDTO {
-    return new UserDTO(
-      user.id,
-      user.email,
-      user.firstName,
-      user.lastName,
-      user.birthday,
-      user.createdAt,
-      user.updatedAt
-    );
-  }
-
-  public toEntity(gender: Gender): User {
+  public static fromTableRow(row: QueryResultRow): User {
     return new User(
-      this.id,
-      this.email,
-      this.firstName,
-      this.lastName,
-      this.birthday,
-      gender,
-      this.createdAt,
-      this.updatedAt
+      row.id,
+      row.email,
+      row.first_name,
+      row.last_name,
+      row.birthday,
+      row.gender,
+      row.created_at,
+      row.updated_at
     );
   }
 }
