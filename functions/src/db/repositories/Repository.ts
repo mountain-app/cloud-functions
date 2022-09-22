@@ -1,7 +1,10 @@
-import { Client, QueryResultRow } from "pg";
+import { Client, ClientConfig, QueryResultRow } from "pg";
 
 export class Repository {
-  constructor(private readonly pgClient: Client) {}
+  private readonly pgClient: Client;
+  constructor(pgClientConfig: ClientConfig) {
+    this.pgClient = new Client(pgClientConfig);
+  }
 
   public async connectQueryAndDisconnect<T extends QueryResultRow>(
     query: string,

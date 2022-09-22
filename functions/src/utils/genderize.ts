@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Gender } from "../db/queries/entities/User";
+import { Gender } from "../types";
 
 interface GenderizeResponse {
   name: string;
@@ -8,7 +8,7 @@ interface GenderizeResponse {
   count: number;
 }
 
-export const GENDERIZE_API_KEY = "YOUR_API_KEY"; // For the future (possibily)
+export const GENDERIZE_API_KEY = "YOUR_API_KEY"; // For the future (possibly)
 export const GENDERIZE_BASE_URL = "https://api.genderize.io";
 
 /**

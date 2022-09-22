@@ -1,5 +1,4 @@
-import { User } from "../queries/entities/User";
-import { Client } from "pg";
+import { User } from "../entities/User";
 import { Repository } from "./Repository";
 import { FIND_USER_BY_ID_OR_EMAIL, SAVE_USER } from "../queries/userQueries";
 
@@ -9,10 +8,6 @@ export interface IUserRepository {
 }
 
 export class UserRepository extends Repository implements IUserRepository {
-  constructor(pgClient: Client) {
-    super(pgClient);
-  }
-
   public async findByIdOrEmail(
     id?: string,
     email?: string

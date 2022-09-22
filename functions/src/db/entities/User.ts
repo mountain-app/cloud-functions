@@ -1,5 +1,5 @@
 import { QueryResultRow } from "pg";
-import { Gender } from "../../../types";
+import { Gender } from "../../types";
 
 export class User {
   public id: string;

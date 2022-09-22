@@ -1,4 +1,4 @@
-import { User } from "../db/queries/entities/User";
+import { User } from "../db/entities/User";
 import { Gender } from "../types";
 
 export class UserDTO {
