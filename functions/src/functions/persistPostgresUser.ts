@@ -30,8 +30,6 @@ export const persistPostgresUser = functions
 
       const gender = await genderize(userInfo.firstName);
 
-      functions.logger.info(userInfo.birthday);
-
       const createdUser = await userService.createUser({
         id: auth.uid,
         email: auth.token.email!,

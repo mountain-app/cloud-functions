@@ -21,7 +21,10 @@ export const genderize = async (name: string): Promise<Gender> => {
   const firstName = name.split(" ")[0];
 
   const { data } = await axios.get<GenderizeResponse>(
-    `${GENDERIZE_BASE_URL}/?name=${firstName}`
+    `${GENDERIZE_BASE_URL}/?name=${firstName
+      .normalize("NFD")
+      .replace(/\p{Diacritic}/gu, "")
+      .toLowerCase()}`
   );
 
   if (data.probability < 0.7) {
