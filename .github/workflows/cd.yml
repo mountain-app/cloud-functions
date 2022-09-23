@@ -4,10 +4,6 @@ on:
   push:
     branches: [main]
 
-env:
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
-  SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
